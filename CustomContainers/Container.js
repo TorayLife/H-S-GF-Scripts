@@ -1,10 +1,10 @@
 var example = {
-    "modelx":100,
-    "modely":2,
-    "modelz":189,
-    "chestx":100,
-    "chesty":1,
-    "chestz":189,
+    "modelx":1251,
+    "modely":92,
+    "modelz":-496,
+    "chestx":1251,
+    "chesty":91,
+    "chestz":-496,
     "time":40,
     "closedMorph": "{Skin:\"c.s:Door-1/skins/Door-1.png\",Name:\"chameleon.Door-1\"}",
     "lockedMorph": "{Skin:\"c.s:Door-1/skins/Door-1.png\",Name:\"chameleon.Door-1\"}",
@@ -61,10 +61,20 @@ function main(c){
         setMorph(c, posModel, tileModel, morphs.opening);
         c.world.playSound(c.getValue('soundOpening'), posTrigger.x, posTrigger.y, posTrigger.z, 1, 1);
         c.scheduleScript(c.getValue('time'), function () {
-            openContainer(c, posChest);
-            c.player.states.setString('openedCustomChest', JSON.stringify(posChest));
-            writeStringToTile(tileChest, 'data', JSON.stringify({posModel: posModel,posTrigger:posTrigger, morphs: morphs, closeSound:c.getValue('soundClosing')}));
-            setMorph(c, posModel, tileModel, morphs.open);
+            try {
+                openContainer(c, posChest);
+                c.player.states.setString('openedCustomChest', JSON.stringify(posChest));
+                writeStringToTile(tileChest, 'data', JSON.stringify({
+                    posModel: posModel,
+                    posTrigger: posTrigger,
+                    morphs: morphs,
+                    closeSound: c.getValue('soundClosing')
+                }));
+                setMorph(c, posModel, tileModel, morphs.open);
+            }
+            catch(err){
+                c.send(err);
+            }
         });
     } catch (e) {
         c.send(e);
